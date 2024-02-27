@@ -1,0 +1,22 @@
+from mrjob.job import MRJob
+import csv
+
+# this is a regular expression that finds all the words inside a String
+WORD_REGEX = re.compile(r"\b\w+\b")
+
+# this line declares the class Lab1, that extends the MRJob format.
+class TweetAnalysis(MRJob):
+
+    # Mapper function to extract tweet text length and emit count of 1
+    def mapper(self, _, line):
+        tweet = next(csv.reader([line]))  # Parsing CSV line
+        tweet_text = tweet[2]
+        yield len(tweet_text), 1
+
+    # Reducer function to sum up the counts and calculate average text length
+    def reducer(self, tweet_length, counts):
+        total_tweets = sum(counts)
+        yield "Average tweet length", tweet_length * total_tweets / total_tweets
+
+if __name__ == "__main__":
+    TweetAnalysis.run()
