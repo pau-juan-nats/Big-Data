@@ -1,0 +1,30 @@
+import requests
+import os
+
+def descargar_libro(url_libro, carpeta_destino):
+    # Verificar si la carpeta de destino existe, si no, crearla
+    if not os.path.exists(carpeta_destino):
+        os.makedirs(carpeta_destino)
+
+    # Nombre del archivo del libro (extraído del URL)
+    nombre_archivo = url_libro.split('/')[-1]
+    ruta_archivo = os.path.join(carpeta_destino, nombre_archivo)
+
+    # Realizar la solicitud GET para descargar el libro
+    response = requests.get(url_libro)
+    if response.status_code == 200:
+        # Guardar el libro en la carpeta de destino
+        with open(ruta_archivo, 'wb') as f:
+            f.write(response.content)
+        print(f'Libro descargado: {nombre_archivo}')
+    else:
+        print(f'Error al descargar el libro: {response.status_code}')
+
+# URL del libro a descargar
+url_libro = 'URL_DEL_LIBRO_PDF'
+
+# Carpeta donde se guardará el libro descargado
+carpeta_destino = 'carpeta_destino'
+
+# Descargar el libro
+descargar_libro(url_libro, carpeta_destino)
